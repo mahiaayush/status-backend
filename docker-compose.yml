@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo-status-app  # ← or keep ${MONGO_DB_NAME} if you prefer
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
+      # Optional but recommended: create your app database automatically
+      # MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    name: ${MONGO_DB_NAME:-status-app}_data  # ← nice way to prefix it
