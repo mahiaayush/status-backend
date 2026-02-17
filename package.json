@@ -150,8 +150,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "serverless offline start --reloadHandler"
   },
-  "keywords": [],
+  "keywords": ["serverless", "aws", "lambda", "express", "firebase", "application"],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "serverless express app for firebase status updates"
 }

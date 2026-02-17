@@ -1,6 +1,6 @@
 service: status-app-backend
-useDotenv: true,
-frameworkVersion: "4"
+useDotenv: true
+frameworkVersion: 4
 provider:
   name: aws
   runtime: nodejs18.x

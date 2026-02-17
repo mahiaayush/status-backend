@@ -1,7 +1,9 @@
 const express = require("express");
-const verifyToken = require("../config/firebase");
+const verifyToken = require("../middleware/verifyFirebaseToken");
+const admin = require("../config/firebase");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const { connectDB } = require("../config/mongo");
+const connectDB = require("../config/mongo");
 
 const router = express.Router();
 
@@ -18,19 +20,18 @@ router.get("/me", verifyToken, async (req, res) => {
 
   res.json(user);
 });
-router.get("/register", async (req, res) => {
+
+// Register route (expects JSON body: { idToken, name })
+router.post("/register", async (req, res) => {
   try {
+    // connectDB is idempotent in this project but app.js already calls it on startup
     await connectDB();
-    const { idToken, name } = JSON.parse(req.body);
-    if (!idToken) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: "Firebase token required" }),
-      };
-    }
+
+    const { idToken, name } = req.body || {};
+    if (!idToken) return res.status(400).json({ message: "Firebase token required" });
+
     // Verify Firebase ID Token
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-
     const { uid, email, phone_number } = decodedToken;
 
     // Check if user already exists
@@ -52,20 +53,10 @@ router.get("/register", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "User registered successfully",
-        token,
-        user,
-      }),
-    };
+    return res.json({ message: "User registered successfully", token, user });
   } catch (err) {
-    console.error(error)
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: "Internal Server Error" }),
-    };
+    console.error(err);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 module.exports = router;

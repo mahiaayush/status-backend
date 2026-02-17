@@ -1,66 +1,70 @@
 
-  const html = `
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <title>Firebase OTP Test</title>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-      import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } 
-      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+const express = require("express");
 
-      const firebaseConfig = {
-        apiKey: "YOUR_WEB_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID"
-      };
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase OTP Test</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } 
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
+    const firebaseConfig = {
+      apiKey: "YOUR_WEB_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID"
+    };
 
-      window.sendOtp = async () => {
-        const phone = document.getElementById("phone").value;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {});
-        const appVerifier = window.recaptchaVerifier;
+    window.sendOtp = async () => {
+      const phone = document.getElementById("phone").value;
 
-        const confirmation = await signInWithPhoneNumber(auth, phone, appVerifier);
-        window.confirmationResult = confirmation;
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {});
+      const appVerifier = window.recaptchaVerifier;
 
-        alert("OTP Sent");
-      };
+      const confirmation = await signInWithPhoneNumber(auth, phone, appVerifier);
+      window.confirmationResult = confirmation;
 
-      window.verifyOtp = async () => {
-        const code = document.getElementById("otp").value;
+      alert("OTP Sent");
+    };
 
-        const result = await window.confirmationResult.confirm(code);
-        const idToken = await result.user.getIdToken();
+    window.verifyOtp = async () => {
+      const code = document.getElementById("otp").value;
 
-        document.getElementById("token").innerText = idToken;
-      };
-    </script>
-  </head>
-  <body>
-    <h2>Phone OTP Test</h2>
+      const result = await window.confirmationResult.confirm(code);
+      const idToken = await result.user.getIdToken();
 
-    <input id="phone" placeholder="+919999999999" />
-    <button onclick="sendOtp()">Send OTP</button>
+      document.getElementById("token").innerText = idToken;
+    };
+  </script>
+</head>
+<body>
+  <h2>Phone OTP Test</h2>
 
-    <div id="recaptcha-container"></div>
+  <input id="phone" placeholder="+919999999999" />
+  <button onclick="sendOtp()">Send OTP</button>
 
-    <br/><br/>
+  <div id="recaptcha-container"></div>
 
-    <input id="otp" placeholder="Enter OTP" />
-    <button onclick="verifyOtp()">Verify OTP</button>
+  <br/><br/>
 
-    <h3>ID Token:</h3>
-    <p id="token" style="word-break: break-all;"></p>
-  </body>
-  </html>
-  `;
-  
-  module.exports.page = async (req, res) => {
-    res.send(html);
-  };
+  <input id="otp" placeholder="Enter OTP" />
+  <button onclick="verifyOtp()">Verify OTP</button>
 
-  //module.exports = router;
+  <h3>ID Token:</h3>
+  <p id="token" style="word-break: break-all;"></p>
+</body>
+</html>
+`;
+
+const router = express.Router();
+
+router.get("/", async (req, res) => {
+  res.send(html);
+});
+
+module.exports = router;
