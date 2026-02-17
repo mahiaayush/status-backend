@@ -1,6 +1,6 @@
 service: status-app-backend
 useDotenv: true,
-frameworkVersion: "3"
+frameworkVersion: "4"
 provider:
   name: aws
   runtime: nodejs18.x
@@ -14,6 +14,19 @@ functions:
     handler: handler.handler
     events:
       - httpApi: "*"
+  register:
+    handler: src/handlers/auth.register
+    events:
+      - http:
+          path: auth/register
+          method: post
+          cors: true
+  testPage:
+    handler: src/handlers/testPage.test
+    events:
+      - http:
+          path: test
+          method: get
 
 plugins:
   - serverless-offline
