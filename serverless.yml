@@ -1,0 +1,19 @@
+service: status-app-backend
+useDotenv: true,
+frameworkVersion: "3"
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  environment:
+    MONGO_URI: ${env:MONGO_URI}
+    FIREBASE_PROJECT_ID: ${env:FIREBASE_PROJECT_ID}
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: "*"
+
+plugins:
+  - serverless-offline
