@@ -1,3 +1,9 @@
 node_modules
 
 .early.coverage
+
+# Firebase service account key
+firebase-service-account.json
+
+# Environment variables
+.env
