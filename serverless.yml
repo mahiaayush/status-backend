@@ -1,32 +1,88 @@
 service: status-app-backend
-useDotenv: true
-frameworkVersion: 4
+
+frameworkVersion: "^4.32.0"
+
 provider:
   name: aws
-  runtime: nodejs18.x
-  region: ap-south-1
+  runtime: nodejs20.x
   environment:
     MONGO_URI: ${env:MONGO_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
     FIREBASE_PROJECT_ID: ${env:FIREBASE_PROJECT_ID}
-
-functions:
-  api:
-    handler: handler.handler
-    events:
-      - httpApi: "*"
-  register:
-    handler: src/handlers/auth.register
-    events:
-      - http:
-          path: auth/register
-          method: post
-          cors: true
-  testPage:
-    handler: src/handlers/testPage.test
-    events:
-      - http:
-          path: test
-          method: get
+    FIREBASE_PRIVATE_KEY_ID: ${env:FIREBASE_PRIVATE_KEY_ID}
+    FIREBASE_CLIENT_EMAIL: ${env:FIREBASE_CLIENT_EMAIL}
+    FIREBASE_CLIENT_ID: ${env:FIREBASE_CLIENT_ID}
+    FIREBASE_PRIVATE_KEY: ${env:FIREBASE_PRIVATE_KEY}
+    FIREBASE_WEB_API_KEY: ${env:FIREBASE_WEB_API_KEY}
+    ENABLE_TEST_PHONE_LOGIN: ${env:ENABLE_TEST_PHONE_LOGIN, 'false'}
+    TEST_PHONE_NUMBERS: ${env:TEST_PHONE_NUMBERS, ''}
 
 plugins:
   - serverless-offline
+
+functions:
+  # Test routes
+  test:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /test
+          method: GET
+
+  testOtpPage:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /test/otp
+          method: GET
+
+  # Auth routes
+  authMe:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /auth/me
+          method: GET
+
+  authSendOtp:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /auth/phone/send-otp
+          method: POST
+
+  authVerifyOtp:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /auth/phone/verify-otp
+          method: POST
+
+  authTestLogin:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /auth/phone/test-login
+          method: POST
+
+  authTestSendOtp:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /auth/phone/test-send-otp
+          method: POST
+
+  # Status routes
+  statusToday:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /status/today
+          method: GET
+
+  statusCategory:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /status/category/{type}
+          method: GET

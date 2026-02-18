@@ -1,0 +1,95 @@
+{
+  "/Users/ajeetkumar/Documents/workspaces/status-backend/serverless.yml": {
+    "versionFramework": "4.32.0",
+    "servicePath": "/Users/ajeetkumar/Documents/workspaces/status-backend/serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "status-app-backend",
+      "useDotenv": true,
+      "frameworkVersion": 4,
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs18.x",
+        "region": "ap-south-1",
+        "environment": {
+          "FIREBASE_PROJECT_ID": "${env:FIREBASE_PROJECT_ID}"
+        }
+      },
+      "functions": {
+        "api": {
+          "handler": "handler.handler",
+          "events": [
+            {
+              "httpApi": "*"
+            }
+          ]
+        },
+        "register": {
+          "handler": "src/handlers/auth.register",
+          "events": [
+            {
+              "http": {
+                "path": "auth/register",
+                "method": "post",
+                "cors": true
+              }
+            }
+          ]
+        },
+        "testPage": {
+          "handler": "src/handlers/testPage.test",
+          "events": [
+            {
+              "http": {
+                "path": "test",
+                "method": "get"
+              }
+            }
+          ]
+        }
+      },
+      "plugins": [
+        "serverless-offline"
+      ]
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs18.x",
+      "region": "ap-south-1",
+      "environment": {
+        "FIREBASE_PROJECT_ID": "${env:FIREBASE_PROJECT_ID}"
+      }
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "error": {
+      "message": "Cannot resolve '${env:FIREBASE_PROJECT_ID}' variable at 'provider.environment.FIREBASE_PROJECT_ID'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.",
+      "stack": "Error: Cannot resolve '${env:FIREBASE_PROJECT_ID}' variable at 'provider.environment.FIREBASE_PROJECT_ID'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.\n    at _ResolverManager.resolve (file:///Users/ajeetkumar/.serverless/releases/4.32.0/package/dist/sf-core.js:881:32363)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async #handlePlaceholderNode (file:///Users/ajeetkumar/.serverless/releases/4.32.0/package/dist/sf-core.js:881:30541)\n    at async file:///Users/ajeetkumar/.serverless/releases/4.32.0/package/dist/sf-core.js:881:28385\n    at async processNodeAndHandleCompletion (file:///Users/ajeetkumar/.serverless/releases/4.32.0/package/dist/sf-core.js:881:16770)",
+      "code": "MISSING_VARIABLE_RESULT"
+    },
+    "serviceRawFile": "service: status-app-backend\nuseDotenv: true\nframeworkVersion: 4\nprovider:\n  name: aws\n  runtime: nodejs18.x\n  region: ap-south-1\n  environment:\n    FIREBASE_PROJECT_ID: ${env:FIREBASE_PROJECT_ID}\n\nfunctions:\n  api:\n    handler: handler.handler\n    events:\n      - httpApi: \"*\"\n  register:\n    handler: src/handlers/auth.register\n    events:\n      - http:\n          path: auth/register\n          method: post\n          cors: true\n  testPage:\n    handler: src/handlers/testPage.test\n    events:\n      - http:\n          path: test\n          method: get\n\nplugins:\n  - serverless-offline\n",
+    "command": [
+      "offline",
+      "start"
+    ],
+    "options": {
+      "reloadHandler": true
+    },
+    "orgId": "62d712ff-2ebb-477f-8297-8d591678be0a",
+    "orgName": "iicsstudy",
+    "userId": "0YbR0BtrxpXYn4L46Y",
+    "userName": "iicsstudy",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}

@@ -22,7 +22,7 @@ const connectDB = async () => {
     }
   }
 
-  const db = await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  const db = await mongoose.connect(uri);
   isConnected = db.connections[0].readyState;
   return isConnected;
 };
