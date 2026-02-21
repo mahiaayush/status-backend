@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,16 +14,10 @@ import { verifyOtp } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function OTPScreen({ route }) {
-  const { phoneNumber, sessionInfo, token, user } = route.params || {};
+  const { phoneNumber, sessionInfo } = route.params || {};
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-
-  useEffect(() => {
-    if (token && user) {
-      login(token, user);
-    }
-  }, [token, user, login]);
 
   const handleVerify = async () => {
     if (code.length !== 6) {

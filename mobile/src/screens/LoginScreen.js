@@ -10,30 +10,42 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { testLogin } from '../api/client';
-import { useAuth } from '../context/AuthContext';
+import { sendOtp } from '../api/client';
+import RecaptchaVerifier from '../components/RecaptchaVerifier';
 
 export default function LoginScreen({ navigation }) {
   const [phone, setPhone] = useState('+91');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const [showRecaptcha, setShowRecaptcha] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSendOtp = () => {
     const trimmed = phone.trim();
     if (!trimmed || trimmed.length < 10) {
       Alert.alert('Error', 'Please enter a valid phone number');
       return;
     }
+    setShowRecaptcha(true);
+  };
 
+  const onRecaptchaVerify = async (recaptchaToken) => {
+    setShowRecaptcha(false);
     setLoading(true);
     try {
-      const data = await testLogin(trimmed);
-      await login(data.customToken, data.user);
+      const data = await sendOtp(phone.trim(), recaptchaToken);
+      navigation.navigate('OTP', {
+        phoneNumber: phone.trim(),
+        sessionInfo: data.sessionInfo,
+      });
     } catch (err) {
-      Alert.alert('Login Failed', err.message || 'Something went wrong');
+      Alert.alert('Failed to Send OTP', err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
+  };
+
+  const onRecaptchaError = (message) => {
+    setShowRecaptcha(false);
+    Alert.alert('Verification Failed', message || 'reCAPTCHA verification failed');
   };
 
   return (
@@ -61,17 +73,24 @@ export default function LoginScreen({ navigation }) {
 
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
-          onPress={handleLogin}
+          onPress={handleSendOtp}
           disabled={loading}
           activeOpacity={0.8}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Send OTP</Text>
           )}
         </TouchableOpacity>
       </View>
+
+      <RecaptchaVerifier
+        visible={showRecaptcha}
+        onVerify={onRecaptchaVerify}
+        onError={onRecaptchaError}
+        onClose={() => setShowRecaptcha(false)}
+      />
     </KeyboardAvoidingView>
   );
 }
